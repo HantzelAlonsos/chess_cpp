@@ -27,7 +27,10 @@ bool King::isMoveValid(const Square &target)
     if (abs(rowDiff) == 0 && (abs(colDiff) == 2))
     {
         // Castling!
-        return board.isCastlingValid(*this->square, target);
+        if( board.isCastlingValid(*this->square, target)){
+            board.transaction.isCastling = true;
+            return true;
+        }
     }
     return false;
 }
