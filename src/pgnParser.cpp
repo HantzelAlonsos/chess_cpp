@@ -8,7 +8,7 @@ PgnParser::PgnParser(std::string matchContent)
 {
 
     std::regex whiteWinner("Result \"1-0\"");
-    std::regex whiteLose("Result \"1-0\"");
+    std::regex whiteLose("Result \"0-1\"");
     std::regex stalemate("Result \"1/2-1/2\"");
 
     if (std::regex_search(matchContent, whiteWinner))
