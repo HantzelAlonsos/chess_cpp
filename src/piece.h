@@ -6,6 +6,7 @@
 #include "square.h"
 #include <iostream>
 
+
 // Forward decl 
 class Board;
 

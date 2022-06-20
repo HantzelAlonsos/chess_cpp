@@ -36,12 +36,12 @@ bool Game::move(std::string moveStr)
 int main(int argc, char* argv[])
 {
     std::cout << "Chess simulator deluxe" << std::endl;
+    
     Game myGame;
-
     myGame.render();
     
     if(argc > 1){
-        std::cout << "Test white pawn: \u2659" << std::endl;
+        //std::cout << "Test white pawn: \u2659" << std::endl;
 
         std::ifstream file("test/test1Game.pgn");
         std::stringstream buffer;

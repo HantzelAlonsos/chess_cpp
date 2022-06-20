@@ -17,6 +17,25 @@
 #include "king.h"
 #include "pgnParser.h"
 
+
+typedef struct TransactionS{
+    std::string sourceApos;
+    std::string targetApos;
+    Piece* sourcePcPtr;
+    Piece* targetPcPtr;
+    bool isCastling = false;
+    bool isEnpassant = false;
+    bool isPromotion = false;
+    bool stateOfMoveBeforeAtCreationOfTransaction;
+}TransactionS;
+
+typedef struct EnPassant
+{
+    Piece* pieceThatJumped2Square;
+    std::string enPassantAttackSquareApos;
+}EnPassant; // En passant ? passed peasant ?
+
+
 class Board
 {
 public:
@@ -26,46 +45,39 @@ public:
         return getSquare(request);
     }
 
+
     void createBoard();
-    Square& getSquare(std::string);
-    const Square& getConstSquare(std::string) const;
     void render(Color);
 
-    bool move(Move);
-    bool isKingInCheck(Color) const;
-    bool isKingInCheckOnSquare(Color color,   const Square &target) const;
-    Piece* findPiece(Piece_type, Color) const;
-    std::vector<Piece*> findPieces(Piece_type, Color) const;
-    std::vector<Piece*> findPieces(Color&) const;
-    // const or the "dont fuck around during these functions."
+    // Helper functions:
     bool scanBetweenPcsAlongRow(const Square&, const Square&) const;
     bool scanBetweenPcsAlongCol(const Square&, const Square&) const;
     bool scanBetweenPcsDiagonal(const Square&, const Square&) const;
     void addTransactionToBuffer(const Square&, const Square&);
     bool isCastlingValid(const Square &, const Square&) const;
     void handleCastling(Square&, Square&);
+    void handleEnPassant(Square&, Square&);
+    Square& getSquare(std::string);
+    const Square& getConstSquare(std::string) const;
+
+    // Transactional functions:
     void emptyBuffer();
     void restoreTransaction();
-    bool isKingInMate(Color);
-    //std::vector<Piece*> findPieces(Piece_type); // DO NOT IMPLEMENT
-    //void restoreBuffer();
+    bool move(Move);
+
+    
     Square* getEnPassantSquare() const;
-    void setEnpassant(std::string, Square&);
-    Square* enPassantPcSquare;
-    bool forceClearEnPassant;
+    void setEnpassant(std::string, Piece*);
+    TransactionS transaction;
+    EnPassant enPassant;
+    bool isEnPassantPossible;
 private:
 
     Square board[8][8];
-    std::string sourceApos;
-    std::string targetApos;
-    Piece* sourcePcPtr;
-    Piece* targetPcPtr;
     Square* enPassantSquare;
     Piece * enPassantPc;
-    bool enPassantSetThisTurn;
-    bool handlePromotion(Square&, Move&);
-    bool stateOfHasMovedOnTransaction;
-
+    
+    // Methods used to create board
     void createKings();
     void createQueens();
     void createBishops();
@@ -75,8 +87,19 @@ private:
 
     void clearOldEnPassant();
 
+    // Board status functions
+    bool handlePromotion(Square&, Square&, Move&);
+
+    // Helper functions
     std::string determineCastlingRook(const Square&, const Square&) const;
+    Piece* findPiece(Piece_type, Color) const;
+    bool isKingInMate(Color);
+    bool isKingInCheck(Color) const;
+    bool isKingInCheckOnSquare(Color color,   const Square &target) const;
+    std::vector<Piece*> findPieces(Piece_type, Color) const;
+    std::vector<Piece*> findPieces(Color&) const;
 
 };
+
 
 #endif // BOARD_H

@@ -1,4 +1,5 @@
 #include "piece.h"
+#include "board.h"
 
 Piece::Piece(Color color,
              std::string apos,
@@ -20,6 +21,10 @@ bool Piece::isMoveValid(const Square &target)
 void Piece::move(Square &target)
 {
     // This should be handled with std::move later on.
+    
+    board.isEnPassantPossible = false; // The ONLY time this should trigger
+    // is when the pawn is jumps 2 steps. ALL other cases this is set to false
+
     (*square).piece = nullptr;
     target.piece = this;
 

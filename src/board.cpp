@@ -29,7 +29,6 @@ void Board::createBoard()
         }
     }
 
-    forceClearEnPassant = false;
 
     createKings();
     createQueens();
@@ -127,56 +126,36 @@ bool Board::move(Move move)
 
     Square &source = getSquare(move.source);
     Square &target = getSquare(move.target);
-    // std::cout << "move from " << source.apos << " to " << target.apos << std::endl;
-
-    if (source.piece == nullptr)
+    
+    if (source.piece == nullptr) // Cant move square with no piece.
     {
         return false;
     }
-
-    if (target.piece != nullptr)
+    
+    if (target.piece != nullptr && target.piece->color == source.piece->color)
     {
-        if (target.piece->color == source.piece->color)
-        {
-            std::cout << "move encountered same color" << std::endl;
-            return false;
-        }
+        std::cout << "move encountered same color" << std::endl;
+        return false;
     }
-
+    
     addTransactionToBuffer(source, target);
+
 
     if (source.piece->isMoveValid(target))
     {
-
-        if (source.piece->type == Piece_type::king)
-        {
-            // Castling.
-            if (isCastlingValid(source, target))
-            {
-                handleCastling(source, target);
-            }
-            else
-            {
-                source.piece->move(target);
-            }
+        if(transaction.isCastling){
+            handleCastling(source, target);
         }
-        else if (target.row == 1 || target.row == 8)
-        {
-            // pawn promotion.
-            source.piece->move(target);
-            if (target.piece->type == Piece_type::pawn)
-            {
-                if (!handlePromotion(target, move))
-                {
-                    return false;
-                }
-            }
+        else if(transaction.isPromotion){
+            handlePromotion(source, target, move);
         }
-        else
-        {
-
+        else if(transaction.isEnpassant){
+            handleEnPassant(source, target);
+        }
+        else{
             source.piece->move(target);
         }
+
 
         if (isKingInCheck(target.piece->color))
         {
@@ -191,7 +170,6 @@ bool Board::move(Move move)
     }
 
     emptyBuffer();
-    clearOldEnPassant();
 
     // Check and check mate is actually not related to move.
     if (isKingInCheck(Color::black))
@@ -212,6 +190,7 @@ bool Board::move(Move move)
         }
         std::cout << "white is in check" << std::endl;
     }
+    
 
     return true;
 }
@@ -224,10 +203,9 @@ bool Board::isKingInCheck(Color color) const
 
 bool Board::isKingInCheckOnSquare(Color color, const Square &target) const
 {
-    // When transitioning from 
+    // When transitioning from
     Color searchedColorForEnemyPieces = Color::white;
-    
-    
+
     // This is disgusting. Fix this.
     if (color == Color::white)
     {
@@ -459,13 +437,18 @@ bool Board::isKingInMate(Color color)
 
 void Board::addTransactionToBuffer(const Square &source, const Square &target)
 {
-    sourceApos = source.apos;
-    targetApos = target.apos;
-    sourcePcPtr = source.piece;
-    targetPcPtr = target.piece;
-    if (sourcePcPtr->type == Piece_type::rook || sourcePcPtr->type == Piece_type::pawn || sourcePcPtr->type == Piece_type::king)
+    transaction.sourceApos = source.apos;
+    transaction.targetApos = target.apos;
+    transaction.sourcePcPtr = source.piece;
+    transaction.targetPcPtr = target.piece;
+    transaction.isCastling = false;
+    transaction.isEnpassant = false;
+    transaction.isPromotion = false;
+
+    if (transaction.sourcePcPtr->type == Piece_type::rook || transaction.sourcePcPtr->type == Piece_type::pawn || transaction.sourcePcPtr->type == Piece_type::king)
     {
-        stateOfHasMovedOnTransaction = static_cast<Rook *>(sourcePcPtr)->hasMoved;
+        
+        transaction.stateOfMoveBeforeAtCreationOfTransaction = static_cast<Rook *>(transaction.sourcePcPtr)->hasMoved;
     }
 }
 
@@ -538,68 +521,56 @@ void Board::handleCastling(Square &source, Square &target)
     rookSource.piece->move(rookTarget);
 }
 
-Square *Board::getEnPassantSquare() const
-{
-    return enPassantSquare;
-}
 
-void Board::setEnpassant(std::string enPassantSqrString, Square &enPassantPcSquareTemp)
+void Board::setEnpassant(std::string attackSquareApos, Piece* pieceThatJumped2Squares)
 {
     // Does not matter what was here before. This needs to be cleared.
-    enPassantSquare = &getSquare(enPassantSqrString);
-    enPassantSetThisTurn = true;
-    enPassantPcSquare = &enPassantPcSquareTemp;
-    enPassantPc = enPassantPcSquareTemp.piece;
+    enPassant.enPassantAttackSquareApos = attackSquareApos;
+    enPassant.pieceThatJumped2Square = pieceThatJumped2Squares;
+    isEnPassantPossible = true;
 }
 
-void Board::clearOldEnPassant()
+void Board::handleEnPassant(Square& source, Square& target)
 {
-    if (!enPassantSetThisTurn)
-    {
-        enPassantSquare = nullptr;
-    }
-    enPassantSetThisTurn = false;
+    transaction.targetPcPtr = enPassant.pieceThatJumped2Square;
+    source.piece->move(target);
+    getSquare(enPassant.pieceThatJumped2Square->apos).piece = nullptr;
 }
 
 void Board::emptyBuffer()
 {
-    delete targetPcPtr;
-    if (forceClearEnPassant)
-    {
-        if (enPassantPc != nullptr)
-        {
-            delete enPassantPc;
-        }
-
-        forceClearEnPassant = false;
+    delete transaction.targetPcPtr;
+    if(transaction.isPromotion){
+        delete transaction.sourcePcPtr;
     }
 }
 
 void Board::restoreTransaction()
 {
     // TODO implement std::move if unique.
-    Square &target = getSquare(targetApos);
-    target.piece = targetPcPtr;
+    Square &target = getSquare(transaction.targetApos);
+    target.piece = transaction.targetPcPtr;
     if (target.piece != nullptr)
     {
-        target.piece->apos = targetApos;
+        target.piece->apos = transaction.targetApos;
         target.piece->square = &target;
     }
 
     // Source piece cannot be null
-    Square &source = getSquare(sourceApos);
-    source.piece = sourcePcPtr;
-    source.piece->apos = sourceApos;
+    Square &source = getSquare(transaction.sourceApos);
+    source.piece = transaction.sourcePcPtr;
+    source.piece->apos = transaction.sourceApos;
     source.piece->square = &source;
 
-    if (sourcePcPtr->type == Piece_type::rook || sourcePcPtr->type == Piece_type::pawn || sourcePcPtr->type == Piece_type::king)
+    if (transaction.sourcePcPtr->type == Piece_type::rook || transaction.sourcePcPtr->type == Piece_type::pawn || transaction.sourcePcPtr->type == Piece_type::king)
     {
-        static_cast<Rook *>(sourcePcPtr)->hasMoved = stateOfHasMovedOnTransaction;
+        static_cast<Rook *>(transaction.sourcePcPtr)->hasMoved = transaction.stateOfMoveBeforeAtCreationOfTransaction;
     }
 }
 
-bool Board::handlePromotion(Square &target, Move &move)
+bool Board::handlePromotion(Square& source, Square& target, Move &move)
 {
+    source.piece->move(target);
     if (move.promotion == Promotion::None)
     {
         std::string userInput;
@@ -634,7 +605,7 @@ bool Board::handlePromotion(Square &target, Move &move)
     switch (move.promotion)
     {
     case Promotion::Queen:
-        if (target.piece->color == Color::white)
+        if (transaction.sourcePcPtr->color == Color::white)
         {
             target.piece = new Queen(target.piece->color, target.apos, Piece_type::queen, "\u2655",
                                      &target, *this);
@@ -646,7 +617,7 @@ bool Board::handlePromotion(Square &target, Move &move)
         }
         break;
     case Promotion::Bishop:
-        if (target.piece->color == Color::white)
+        if (transaction.sourcePcPtr->color == Color::white)
         {
             target.piece = new Bishop(target.piece->color, target.apos, Piece_type::bishop, "\u2657",
                                       &target, *this);
@@ -658,7 +629,7 @@ bool Board::handlePromotion(Square &target, Move &move)
         }
         break;
     case Promotion::Knight:
-        if (target.piece->color == Color::white)
+        if (transaction.sourcePcPtr->color == Color::white)
         {
             target.piece = new Knight(target.piece->color, target.apos, Piece_type::knight, "\u2658",
                                       &target, *this);
@@ -670,7 +641,7 @@ bool Board::handlePromotion(Square &target, Move &move)
         }
         break;
     case Promotion::Rook:
-        if (target.piece->color == Color::white)
+        if (transaction.sourcePcPtr->color == Color::white)
         {
             target.piece = new Rook(target.piece->color, target.apos, Piece_type::knight, "\u2656",
                                     &target, *this);

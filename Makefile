@@ -4,7 +4,7 @@
 
 TARGET_EXEC := chess
 
-BUILD_DIR := ./build
+BUILD_DIR := ./.build
 SRC_DIRS := ./src
 
 CPPFLAGS := -std=c++14
@@ -23,17 +23,17 @@ CPPFLAGS = -std=c++14
 $(BUILD_DIR)/%.o: %.c $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
 
-
-$(TARGET_EXEC): $(OBJS)
-	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
-
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+$(TARGET_EXEC): $(OBJS)
+	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
+
 .PHONY: clean
 clean:
 	rm -r $(BUILD_DIR)
+	rm -f $(TARGET_EXEC)
 
 run: $(TARGET_EXEC)
 	./$(TARGET_EXEC)
@@ -41,3 +41,8 @@ run: $(TARGET_EXEC)
 
 test: $(TARGET_EXEC)
 	./$(TARGET_EXEC) 1
+
+
+build: clean $(TARGET_EXEC)
+
+
