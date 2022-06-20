@@ -11,7 +11,7 @@ Pawn::Pawn(Color side,
     hasMoved = false;
 }
 
-bool Pawn::is_move_valid(const Square &target)
+bool Pawn::isMoveValid(const Square &target)
 {
     // This is shit- Fix this.
     if (apos == target.apos)
@@ -89,7 +89,7 @@ void Pawn::move(Square &target)
             // This should preferably be done by board
             // But I cant make it work that way.
             board.forceClearEnPassant = true;
-            board.EnPassantPcSquare->piece = nullptr;
+            board.enPassantPcSquare->piece = nullptr;
             
             square->piece = nullptr;
             target.piece = this;
@@ -116,7 +116,7 @@ void Pawn::move(Square &target)
 
 bool Pawn::canAttack(const Square &target)
 {
-    // TODO consider removing code duplication from is_move_valid.
+    // TODO consider removing code duplication from isMoveValid.
     int tableTurner = 1;
     if (this->color == Color::white)
     {

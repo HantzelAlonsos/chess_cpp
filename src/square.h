@@ -8,11 +8,11 @@ class Piece;
 class Square
 {
 public:
-    std::string apos;
-    int pos;
-    int row;
-    int colInt;
-    char column;
+    std::string apos; // algebraic position, a4, e4 etc
+    //int pos; // Deprecated: use apos instead
+    int row; // 1 indexed
+    int colInt; // Columns are lettered in chess. 1 indexed
+    char column; 
     Piece *piece;
 };
 

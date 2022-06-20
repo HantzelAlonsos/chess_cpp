@@ -74,19 +74,22 @@ Move PgnParser::convertStringToMove(std::string pgnString)
     {
         move.isCheckingMove = (pgnString.substr(4, 1) == "+") ? true : false;
 
-        if (pgnString.substr(4, 1) == "q")
+        std::string promotionString = pgnString.substr(4, 1);
+        
+        // Cant make this into a switch :(
+        if(promotionString == "q")
         {
             move.promotion = Promotion::Queen;
         }
-        else if (pgnString.substr(4, 1) == "b")
+        else if (promotionString == "b")
         {
             move.promotion = Promotion::Bishop;
         }
-        else if (pgnString.substr(4, 1) == "n")
+        else if (promotionString == "n")
         {
             move.promotion = Promotion::Knight;
         }
-        else if (pgnString.substr(4, 1) == "r")
+        else if (promotionString == "r")
         {
             move.promotion = Promotion::Rook;
         }

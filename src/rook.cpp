@@ -11,7 +11,7 @@ Rook::Rook(Color color,
     hasMoved = false;
 }
 
-bool Rook::is_move_valid(const Square &target)
+bool Rook::isMoveValid(const Square &target)
 {
     if (apos == target.apos)
     {
@@ -46,5 +46,5 @@ void Rook::move(Square &target)
 bool Rook::canAttack(const Square &target)
 {
     // Nothing fancy.
-    return Rook::is_move_valid(target);
+    return Rook::isMoveValid(target);
 }

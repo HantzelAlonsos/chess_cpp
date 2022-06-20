@@ -15,7 +15,7 @@ public:
          Board &);
 
     bool hasMoved;
-    bool is_move_valid(const Square &);
+    bool isMoveValid(const Square &);
     void move(Square &);
     bool canAttack(const Square &);
 };

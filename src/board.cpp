@@ -18,7 +18,6 @@ void Board::createBoard()
         for (int col = 0; col <= 7; ++col)
         {
             // We start with row and colInt 1 to make since chess is not 0 indexed
-            board[row - 1][col].pos = counter;
             board[row - 1][col].row = row;
             board[row - 1][col].colInt = col + 1;
             board[row - 1][col].column = column;
@@ -139,14 +138,14 @@ bool Board::move(Move move)
     {
         if (target.piece->color == source.piece->color)
         {
-            std::cout << "move encoutnered same color" << std::endl;
+            std::cout << "move encountered same color" << std::endl;
             return false;
         }
     }
 
     addTransactionToBuffer(source, target);
 
-    if (source.piece->is_move_valid(target))
+    if (source.piece->isMoveValid(target))
     {
 
         if (source.piece->type == Piece_type::king)
@@ -225,7 +224,10 @@ bool Board::isKingInCheck(Color color) const
 
 bool Board::isKingInCheckOnSquare(Color color, const Square &target) const
 {
+    // When transitioning from 
     Color searchedColorForEnemyPieces = Color::white;
+    
+    
     // This is disgusting. Fix this.
     if (color == Color::white)
     {
@@ -313,7 +315,6 @@ std::vector<Piece *> Board::findPieces(Color &searchedColor) const
 
 bool Board::scanBetweenPcsAlongRow(const Square &source, const Square &target) const
 {
-    // std::cout << "scan between: " << source.apos << " & " << target.apos << std::endl;
     //  Source and target are obviously interchangable.
     //  Just to keep it inline with remaining code.
 
@@ -334,7 +335,6 @@ bool Board::scanBetweenPcsAlongRow(const Square &source, const Square &target) c
     // apos is the only thing that is "chess indexed". TODO
     for (int i = source.colInt - 1 + direction; i != target.colInt - 1; i = i + direction)
     {
-        // std::cout << "along row Scanning" << board[source.row - 1][i].apos << std::endl;
         if (board[source.row - 1][i].piece != nullptr)
         {
             return false;
@@ -345,7 +345,6 @@ bool Board::scanBetweenPcsAlongRow(const Square &source, const Square &target) c
 
 bool Board::scanBetweenPcsAlongCol(const Square &source, const Square &target) const
 {
-    // std::cout << "scan between: " << source.apos << " & " << target.apos << std::endl;
     //  Source and target are obviously interchangable.
     //  Just to keep it inline with remaining code.
 
@@ -437,7 +436,7 @@ bool Board::isKingInMate(Color color)
                 }
                 if (!skip)
                 {
-                    if (pcPtr->is_move_valid(target))
+                    if (pcPtr->isMoveValid(target))
                     {
                         addTransactionToBuffer(*(pcPtr->square), target);
                         std::string storage = pcPtr->apos;
@@ -515,7 +514,7 @@ bool Board::isCastlingValid(const Square &source, const Square &target) const
 
 void Board::handleCastling(Square &source, Square &target)
 {
-    std::cout << "Hadndle castling" << std::endl;
+    std::cout << "Handle castling" << std::endl;
     std::string squareStr = determineCastlingRook(source, target);
     Square &rookSource = getSquare(squareStr);
     std::string rookEndSquare;
@@ -544,13 +543,13 @@ Square *Board::getEnPassantSquare() const
     return enPassantSquare;
 }
 
-void Board::setEnpassant(std::string enPassantSqrString, Square &enPassantPcSquare)
+void Board::setEnpassant(std::string enPassantSqrString, Square &enPassantPcSquareTemp)
 {
     // Does not matter what was here before. This needs to be cleared.
     enPassantSquare = &getSquare(enPassantSqrString);
     enPassantSetThisTurn = true;
-    EnPassantPcSquare = &enPassantPcSquare;
-    enPassantPc = enPassantPcSquare.piece;
+    enPassantPcSquare = &enPassantPcSquareTemp;
+    enPassantPc = enPassantPcSquareTemp.piece;
 }
 
 void Board::clearOldEnPassant()

@@ -10,7 +10,7 @@ King::King(Color color,
 {
 }
 
-bool King::is_move_valid(const Square &target)
+bool King::isMoveValid(const Square &target)
 {
     if (apos == target.apos)
     {
@@ -42,5 +42,5 @@ void King::move(Square &target)
 bool King::canAttack(const Square &target)
 {
     // Nothing fancy.
-    return King::is_move_valid(target);
+    return King::isMoveValid(target);
 }

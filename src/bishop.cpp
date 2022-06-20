@@ -10,7 +10,7 @@ Bishop::Bishop(Color color,
 {
 }
 
-bool Bishop::is_move_valid(const Square &target)
+bool Bishop::isMoveValid(const Square &target)
 {
 if(apos == target.apos){
 return false;
@@ -35,5 +35,5 @@ void Bishop::move(Square &target)
 bool Bishop::canAttack(const Square &target)
 {
     // Nothing fancy.
-    return Bishop::is_move_valid(target);
+    return Bishop::isMoveValid(target);
 }

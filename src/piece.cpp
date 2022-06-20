@@ -12,7 +12,7 @@ Piece::Piece(Color color,
 {
 }
 
-bool Piece::is_move_valid(const Square &target)
+bool Piece::isMoveValid(const Square &target)
 {
     return false; //Should not call virtual function. Something is wrong
 }

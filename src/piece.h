@@ -44,7 +44,7 @@ public:
           Board &board);
 
     static Piece* bufferPtr;
-    virtual bool is_move_valid(const Square &);
+    virtual bool isMoveValid(const Square &);
     virtual void move(Square &);
     virtual bool canAttack(const Square&);
 };

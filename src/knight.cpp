@@ -10,7 +10,7 @@ Knight::Knight(Color color,
 {
 }
 
-bool Knight::is_move_valid(const Square &target)
+bool Knight::isMoveValid(const Square &target)
 {
     if (apos == target.apos)
     {
@@ -36,5 +36,5 @@ void Knight::move(Square &target)
 bool Knight::canAttack(const Square &target)
 {
     // Nothing fancy.
-    return Knight::is_move_valid(target);
+    return Knight::isMoveValid(target);
 }

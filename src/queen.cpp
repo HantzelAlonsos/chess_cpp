@@ -10,7 +10,7 @@ Queen::Queen(Color color,
 {
 }
 
-bool Queen::is_move_valid(const Square &target)
+bool Queen::isMoveValid(const Square &target)
 {
     if (apos == target.apos)
     {
@@ -46,5 +46,5 @@ void Queen::move(Square &target)
 bool Queen::canAttack(const Square &target)
 {
     // Nothing fancy.
-    return Queen::is_move_valid(target);
+    return Queen::isMoveValid(target);
 }

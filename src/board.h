@@ -51,9 +51,10 @@ public:
     //void restoreBuffer();
     Square* getEnPassantSquare() const;
     void setEnpassant(std::string, Square&);
-    Square* EnPassantPcSquare;
+    Square* enPassantPcSquare;
     bool forceClearEnPassant;
 private:
+
     Square board[8][8];
     std::string sourceApos;
     std::string targetApos;
