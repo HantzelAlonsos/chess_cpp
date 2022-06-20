@@ -1,4 +1,4 @@
-# Chess.cpp has the entrypoint.
+# Main.cpp has the entrypoint.
 
 # Shamelessly stolen makefiles lol
 
@@ -20,6 +20,10 @@ DEPS := $(OBJS:.o=.d)
 
 CPPFLAGS = -std=c++14
 
+.PHONY: gtest
+gtest: 
+	g++ -Wall -g -pthread gtest/test1.cpp ./src/knight.cpp ./src/square.cpp ./src/pawn.cpp ./src/piece.cpp ./src/bishop.cpp ./src/king.cpp ./src/chess.cpp ./src/board.cpp ./src/queen.cpp ./src/pgnParser.cpp ./src/rook.cpp -lgtest_main -lgtest -lpthread -I./src
+
 $(BUILD_DIR)/%.o: %.c $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
 
@@ -32,7 +36,7 @@ $(TARGET_EXEC): $(OBJS)
 
 .PHONY: clean
 clean:
-	rm -r $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 	rm -f $(TARGET_EXEC)
 
 run: $(TARGET_EXEC)
@@ -44,5 +48,3 @@ test: $(TARGET_EXEC)
 
 
 build: clean $(TARGET_EXEC)
-
-
