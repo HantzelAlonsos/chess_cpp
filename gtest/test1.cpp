@@ -60,7 +60,6 @@ TEST(enPassant, DoubleEnPassantFailure){
   ASSERT_FALSE(myGame.move("e5d6"));
 }
 
-
 TEST(check, kingInCheckOtherMove){
   Game myGame;
   myGame.render();
@@ -73,7 +72,6 @@ TEST(check, kingInCheckOtherMove){
   }
   ASSERT_FALSE(myGame.move("a7a5"));  
 }
-
 
 TEST(check, getOutOfCheck){
   Game myGame;

@@ -2,6 +2,7 @@
 A stupid chess game I made
 
 En passant, castling and promotions all implemented. The 3 repetition is not implemented.
+There is also nothing that keeps tracks of whos turn it is lol but closed to proper "release" this is easily implemented.
 
 Game uses long algebraic notation as input but can also be setup to parse pgn tho this also needs to be converted to long algebraic. There are a few hundred games converted to long algebraic notation in the test folder which you can setup to be run.
 

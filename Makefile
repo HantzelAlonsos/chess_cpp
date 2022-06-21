@@ -8,7 +8,7 @@ TAGET_GTEST := gtest.out
 BUILD_DIR := ./.build
 SRC_DIRS := ./src
 
-CPPFLAGS := -std=c++14
+
 SRCS := $(shell find $(SRC_DIRS) -name '*.cpp')
 
 # String substitution for every C/C++ file.
@@ -20,7 +20,7 @@ GTEST_LIBS := -lgtest_main -lgtest -lpthread -I./src
 #INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 #INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS = -std=c++14
+CPPFLAGS := -std=c++14 -Wall
 
 GTEST_FLAGS := -g -pthread 
 
@@ -34,14 +34,14 @@ gtest:
 
 
 $(BUILD_DIR)/%.o: %.c $(DEPS)
-	$(CXX) -c -o $@ $< $(CFLAGS)
+	$(CXX) $(CPPFLAGS) -c -o $@ $< $(CFLAGS)
 
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(TARGET_EXEC): $(OBJS)
-	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
 .PHONY: clean
 clean:
