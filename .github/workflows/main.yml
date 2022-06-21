@@ -22,13 +22,19 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Shamlessly stolen https://github.com/bastianhjaeger/github_actions_gtest_example
       - uses: actions/checkout@v3
-
+      - name: Install gtest manually
+        run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp *.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+      - name: configure
+        run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Werror" ..
+      - name: make
+        run: cd build && make
+      - name: Run Test
+        run: /home/runner/work/github_actions_gtest_example/github_actions_gtest_example/build/test/github_actions_gtest_example.test
       # Runs a single command using the runners shell
       - name: build
         run: make build
-
       # Runs a set of commands using the runners shell
       - name: gtest
         run: make gtest
