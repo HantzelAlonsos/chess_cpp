@@ -35,6 +35,9 @@ bool Game::move(std::string moveStr)
  
     PgnParser parser;
     Move move = parser.convertStringToMove(moveStr);
+    if(move.longAlg == NOT_APPLICABLE){
+        return false; // This means parsing has failed somehow.
+    }
     if (!board.move(move))
     {
         std::cout << "Move is not legal" << std::endl;

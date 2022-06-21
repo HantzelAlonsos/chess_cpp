@@ -79,7 +79,7 @@ public:
     EnPassant enPassant;
     bool isEnPassantPossible;
 private:
-
+    Square errorSquare;
     Square board[8][8];
     Square* enPassantSquare;
     Piece * enPassantPc;

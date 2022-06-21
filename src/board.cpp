@@ -29,7 +29,8 @@ void Board::createBoard()
         }
     }
 
-
+    errorSquare.apos = NOT_APPLICABLE;
+    errorSquare.piece = nullptr; // TODO const this ?
     createKings();
     createQueens();
     createBishops();
@@ -51,7 +52,7 @@ Square &Board::getSquare(std::string request)
             }
         }
     }
-    throw std::out_of_range("The requested square was not found");
+    return errorSquare;
 }
 
 const Square &Board::getConstSquare(std::string request) const
@@ -67,7 +68,7 @@ const Square &Board::getConstSquare(std::string request) const
             }
         }
     }
-    throw std::out_of_range("The requested square was not found");
+    return errorSquare;
 }
 
 turn Board::boardIsInMate(){
@@ -88,7 +89,7 @@ turn Board::boardIsInMate(){
 void Board::render(Color player)
 {
     // TODO graphical? string is fine for now. 
-    
+      
     std::string accumulator = "\n";
 
     if (player == Color::black)
