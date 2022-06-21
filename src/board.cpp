@@ -70,11 +70,27 @@ const Square &Board::getConstSquare(std::string request) const
     throw std::out_of_range("The requested square was not found");
 }
 
+turn Board::boardIsInMate(){
+    if(isKingInCheck(Color::white)){
+        if(isKingInMate(Color::white)){
+            return turn::white;
+        }        
+    }
+    else if(isKingInCheck(Color::black)){
+        if(isKingInMate(Color::black)){
+            return turn::black;
+        }        
+    }
+
+    return turn::god;
+}
+
 void Board::render(Color player)
 {
-    // TODO this can be nicely done. but string for now.
+    // TODO graphical? string is fine for now. 
+    
     std::string accumulator = "\n";
-    // printf("Renderign!");
+
     if (player == Color::black)
     {
         accumulator += "  h g f e d c b a \n";
@@ -95,6 +111,7 @@ void Board::render(Color player)
             accumulator += " " + std::to_string(row_c + 1);
             accumulator += "\n";
         }
+        accumulator += "  h g f e d c b a \n";
     }
     else
     {
@@ -117,6 +134,7 @@ void Board::render(Color player)
             accumulator += " " + std::to_string(row_c + 1);
             accumulator += "\n";
         }
+        accumulator += "  a b c d e f g h\n";
     }
     std::cout << accumulator << std::endl;
 }
@@ -188,7 +206,7 @@ bool Board::move(Move move)
             std::cout << "Mate!" << std::endl;
             return true;
         }
-        std::cout << "white is in check" << std::endl;
+        std::cout << "White is in check" << std::endl;
     }
     
 
@@ -392,6 +410,9 @@ bool Board::scanBetweenPcsDiagonal(const Square &source, const Square &target) c
 
 bool Board::isKingInMate(Color color)
 {
+    // Try move ALL pieces to ALL positions.
+    // https://tenor.com/view/everyone-angry-gary-oldman-gif-13877652
+
     std::cout << "checking for mate" << std::endl;
     auto ourPieces = findPieces(color);
     int counter = 0;
@@ -520,7 +541,6 @@ void Board::handleCastling(Square &source, Square &target)
     // move rook
     rookSource.piece->move(rookTarget);
 }
-
 
 void Board::setEnpassant(std::string attackSquareApos, Piece* pieceThatJumped2Squares)
 {

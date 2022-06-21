@@ -7,6 +7,7 @@ class Piece;
 enum class Piece_type;
 enum class color;
 
+
 #include "piece.h"
 #include "board.h"
 #include "pgnParser.h"
@@ -20,6 +21,8 @@ public:
 
     Game();
 
+    bool gameOver();
+    bool isMate();
     void render();
     bool move(std::string);
 };

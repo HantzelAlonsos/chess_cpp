@@ -3,6 +3,7 @@
 # Shamelessly stolen makefiles lol
 
 TARGET_EXEC := chess
+TAGET_GTEST := gtest.out
 
 BUILD_DIR := ./.build
 SRC_DIRS := ./src
@@ -21,8 +22,11 @@ DEPS := $(OBJS:.o=.d)
 CPPFLAGS = -std=c++14
 
 .PHONY: gtest
-gtest: 
-	g++ -Wall -g -pthread gtest/test1.cpp ./src/knight.cpp ./src/square.cpp ./src/pawn.cpp ./src/piece.cpp ./src/bishop.cpp ./src/king.cpp ./src/chess.cpp ./src/board.cpp ./src/queen.cpp ./src/pgnParser.cpp ./src/rook.cpp -lgtest_main -lgtest -lpthread -I./src
+gtest:
+	rm -f $(TAGET_GTEST)
+	g++ -Wall -g -pthread gtest/test1.cpp ./src/knight.cpp ./src/square.cpp ./src/pawn.cpp ./src/piece.cpp ./src/bishop.cpp ./src/king.cpp ./src/game.cpp ./src/board.cpp ./src/queen.cpp ./src/pgnParser.cpp ./src/rook.cpp -lgtest_main -lgtest -lpthread -I./src -o $(TAGET_GTEST)
+	./$(TAGET_GTEST)
+
 
 $(BUILD_DIR)/%.o: %.c $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
@@ -39,7 +43,7 @@ clean:
 	rm -rf $(BUILD_DIR)
 	rm -f $(TARGET_EXEC)
 
-run: $(TARGET_EXEC)
+run: build 
 	./$(TARGET_EXEC)
 
 
@@ -47,4 +51,4 @@ test: $(TARGET_EXEC)
 	./$(TARGET_EXEC) 1
 
 
-build: clean $(TARGET_EXEC)
+build: $(TARGET_EXEC)
