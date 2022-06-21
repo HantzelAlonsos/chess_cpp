@@ -3,7 +3,7 @@
 Game::Game()
 {
     player = Color::white;
-    turn = Color::white;
+    turn = Turn::god;
 }
 
 void Game::render()
@@ -12,7 +12,7 @@ void Game::render()
 }
 
 bool Game::isMate(){
-    if(board.boardIsInMate() != turn::god){
+    if(board.boardIsInMate() != Turn::god){
         return true;
     }
     return false;
@@ -29,16 +29,13 @@ bool Game::move(std::string moveStr)
     // men annars så ska det vara frittfram att göra vad du vill.
 
     // annars är det bara att passa ned Move till Board och låt den ta hand om det.
-    // Bör nog också börjar returnera enums från board.move(). Typ som att
-    // om du flyttar en bonde till sista raden och du inte inputtat e7e8q tex
-    // så måste det frågas (Eller göra queen per default).
- 
+    // Bör nog också börjar returnera enums från board.move().
     PgnParser parser;
     Move move = parser.convertStringToMove(moveStr);
     if(move.longAlg == NOT_APPLICABLE){
         return false; // This means parsing has failed somehow.
     }
-    if (!board.move(move))
+    if (!board.process(move))
     {
         std::cout << "Move is not legal" << std::endl;
         return false;

@@ -5,7 +5,6 @@
 
 class Piece;
 enum class Piece_type;
-enum class color;
 
 
 #include "piece.h"
@@ -16,7 +15,7 @@ class Game
 {
 public:
     Board board;
-    Color turn;
+    Turn turn;
     Color player;
 
     Game();

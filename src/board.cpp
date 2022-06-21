@@ -69,29 +69,30 @@ const Square &Board::getConstSquare(std::string request) const
     return errorSquare;
 }
 
-turn Board::boardIsInMate()
+Turn Board::boardIsInMate()
 {
     if (isKingInCheck(Color::white))
     {
         if (isKingInMate(Color::white))
         {
-            return turn::white;
+            return Turn::white;
         }
     }
     else if (isKingInCheck(Color::black))
     {
         if (isKingInMate(Color::black))
         {
-            return turn::black;
+            return Turn::black;
         }
     }
 
-    return turn::god;
+    return Turn::god;
 }
 
 void Board::render(Color player)
 {
     // TODO graphical? string is fine for now.
+    // player color indicates pov direction.
 
     std::string accumulator = "\n";
 
@@ -143,7 +144,7 @@ void Board::render(Color player)
     std::cout << accumulator << std::endl;
 }
 
-bool Board::move(Move move)
+bool Board::process(Move move)
 {
 
     Square &source = getSquare(move.source);
