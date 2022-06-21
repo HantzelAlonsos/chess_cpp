@@ -69,24 +69,26 @@ const Square &Board::getConstSquare(std::string request) const
     return errorSquare;
 }
 
-Turn Board::boardIsInMate()
+State Board::stateOfBoard()
 {
     if (isKingInCheck(Color::white))
     {
         if (isKingInMate(Color::white))
         {
-            return Turn::white;
+            return State::whiteMate;
         }
+        return State::whiteCheck;
     }
     else if (isKingInCheck(Color::black))
     {
         if (isKingInMate(Color::black))
         {
-            return Turn::black;
+            return State::blackMate;
         }
+        return State::blackCheck;
     }
 
-    return Turn::god;
+    return State::normalPlay;
 }
 
 void Board::render(Color player)

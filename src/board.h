@@ -17,6 +17,10 @@
 #include "king.h"
 #include "pgnParser.h"
 
+typedef enum class State{
+    normalPlay, whiteCheck, whiteMate, blackCheck, blackMate
+}State;
+
 typedef enum class Turn{
     white, 
     black, 
@@ -63,7 +67,7 @@ public:
     void handleEnPassant(Square&, Square&);
     Square& getSquare(std::string);
     const Square& getConstSquare(std::string) const;
-    Turn boardIsInMate(); // Not const since isKingInMate not const
+    State stateOfBoard(); // Not const since isKingInMate not const
 
     // Transactional functions:
     void addTransactionToBuffer(const Square&, const Square&);

@@ -12,7 +12,7 @@ void Game::render()
 }
 
 bool Game::isMate(){
-    if(board.boardIsInMate() != Turn::god){
+    if((board.stateOfBoard() == State::blackMate ) or (board.stateOfBoard() == State::whiteMate )){
         return true;
     }
     return false;
