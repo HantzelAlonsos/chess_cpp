@@ -17,6 +17,11 @@
 #include "king.h"
 #include "pgnParser.h"
 
+typedef enum class turn{
+    white, 
+    black, 
+    god
+}turn;
 
 typedef struct TransactionS{
     std::string sourceApos;
@@ -40,10 +45,11 @@ class Board
 {
 public:
     Board();
-    Square &operator[](std::string request)
-    {
-        return getSquare(request);
-    }
+    // No longer using this but keep it around.
+    // Square &operator[](std::string request)
+    // {
+    //     return getSquare(request);
+    // }
 
 
     void createBoard();
@@ -53,14 +59,15 @@ public:
     bool scanBetweenPcsAlongRow(const Square&, const Square&) const;
     bool scanBetweenPcsAlongCol(const Square&, const Square&) const;
     bool scanBetweenPcsDiagonal(const Square&, const Square&) const;
-    void addTransactionToBuffer(const Square&, const Square&);
     bool isCastlingValid(const Square &, const Square&) const;
     void handleCastling(Square&, Square&);
     void handleEnPassant(Square&, Square&);
     Square& getSquare(std::string);
     const Square& getConstSquare(std::string) const;
+    turn boardIsInMate(); // Not const since isKingInMate not const
 
     // Transactional functions:
+    void addTransactionToBuffer(const Square&, const Square&);
     void emptyBuffer();
     void restoreTransaction();
     bool move(Move);
