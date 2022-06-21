@@ -58,7 +58,8 @@ Move PgnParser::convertStringToMove(std::string pgnString)
 
     if (pgnString.size() < 4 || pgnString.size() > 5)
     {
-        std::cout<<"something went wrong with parsing the pgnString: "<<pgnString<<std::endl;
+        std::cout<<"something went wrong with parsing the string: "<<pgnString<<
+        "\nUse long algebraic notation"<<std::endl;
         move.longAlg = NOT_APPLICABLE;
         return move;
     }
@@ -67,6 +68,10 @@ Move PgnParser::convertStringToMove(std::string pgnString)
     move.source = pgnString.substr(0, 2);
     move.target = pgnString.substr(2, 2);
 
+    if(move.source.length() != 2 or move.target.length() != 2){
+        move.longAlg = NOT_APPLICABLE;
+        return move;
+    }
     move.promotion = Promotion::None;
     move.isCheckingMove = false;
 
