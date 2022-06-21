@@ -13,12 +13,11 @@ TEST(enPassant, EnPassantWorks){
   std::string array[] = {"e2e4", "e4e5", "d7d5", "e5d6"};
   for (auto it : array){
     std::cout<<it<<std::endl;
-    assert(myGame.move(it));
+    EXPECT_TRUE(myGame.move(it));
     myGame.render();
   }
   
 }
-
 
 TEST(enPassant, EnPassantFails){
   Game myGame;

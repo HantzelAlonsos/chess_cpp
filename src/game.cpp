@@ -27,7 +27,7 @@ bool Game::move(std::string moveStr)
     // Bör komma på något sätt att göra "Live chess". dvs att
     // När det är live så ska inte motsidans pjäser kunnas röras
     // men annars så ska det vara frittfram att göra vad du vill.
-
+    return false;
     // annars är det bara att passa ned Move till Board och låt den ta hand om det.
     // Bör nog också börjar returnera enums från board.move().
     PgnParser parser;
