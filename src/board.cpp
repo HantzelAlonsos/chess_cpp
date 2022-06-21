@@ -9,8 +9,6 @@ void Board::createBoard()
 {
 
     int counter = 0;
-    char column = 'a';
-    int row = 1;
 
     for (int row = 1; row <= 8; ++row)
     {
@@ -71,16 +69,21 @@ const Square &Board::getConstSquare(std::string request) const
     return errorSquare;
 }
 
-turn Board::boardIsInMate(){
-    if(isKingInCheck(Color::white)){
-        if(isKingInMate(Color::white)){
+turn Board::boardIsInMate()
+{
+    if (isKingInCheck(Color::white))
+    {
+        if (isKingInMate(Color::white))
+        {
             return turn::white;
-        }        
+        }
     }
-    else if(isKingInCheck(Color::black)){
-        if(isKingInMate(Color::black)){
+    else if (isKingInCheck(Color::black))
+    {
+        if (isKingInMate(Color::black))
+        {
             return turn::black;
-        }        
+        }
     }
 
     return turn::god;
@@ -88,8 +91,8 @@ turn Board::boardIsInMate(){
 
 void Board::render(Color player)
 {
-    // TODO graphical? string is fine for now. 
-      
+    // TODO graphical? string is fine for now.
+
     std::string accumulator = "\n";
 
     if (player == Color::black)
@@ -145,36 +148,38 @@ bool Board::move(Move move)
 
     Square &source = getSquare(move.source);
     Square &target = getSquare(move.target);
-    
+
     if (source.piece == nullptr) // Cant move square with no piece.
     {
         return false;
     }
-    
+
     if (target.piece != nullptr && target.piece->color == source.piece->color)
     {
         std::cout << "move encountered same color" << std::endl;
         return false;
     }
-    
-    addTransactionToBuffer(source, target);
 
+    addTransactionToBuffer(source, target);
 
     if (source.piece->isMoveValid(target))
     {
-        if(transaction.isCastling){
+        if (transaction.isCastling)
+        {
             handleCastling(source, target);
         }
-        else if(transaction.isPromotion){
+        else if (transaction.isPromotion)
+        {
             handlePromotion(source, target, move);
         }
-        else if(transaction.isEnpassant){
+        else if (transaction.isEnpassant)
+        {
             handleEnPassant(source, target);
         }
-        else{
+        else
+        {
             source.piece->move(target);
         }
-
 
         if (isKingInCheck(target.piece->color))
         {
@@ -209,7 +214,6 @@ bool Board::move(Move move)
         }
         std::cout << "White is in check" << std::endl;
     }
-    
 
     return true;
 }
@@ -416,9 +420,8 @@ bool Board::isKingInMate(Color color)
 
     std::cout << "checking for mate" << std::endl;
     auto ourPieces = findPieces(color);
-    int counter = 0;
     bool skip = false;
-    for (int i = 0; i < ourPieces.size(); i++)
+    for (size_t i = 0; i < ourPieces.size(); i++)
     {
         Piece *pcPtr = ourPieces[i];
 
@@ -469,7 +472,7 @@ void Board::addTransactionToBuffer(const Square &source, const Square &target)
 
     if (transaction.sourcePcPtr->type == Piece_type::rook || transaction.sourcePcPtr->type == Piece_type::pawn || transaction.sourcePcPtr->type == Piece_type::king)
     {
-        
+
         transaction.stateOfMoveBeforeAtCreationOfTransaction = static_cast<Rook *>(transaction.sourcePcPtr)->hasMoved;
     }
 }
@@ -543,7 +546,7 @@ void Board::handleCastling(Square &source, Square &target)
     rookSource.piece->move(rookTarget);
 }
 
-void Board::setEnpassant(std::string attackSquareApos, Piece* pieceThatJumped2Squares)
+void Board::setEnpassant(std::string attackSquareApos, Piece *pieceThatJumped2Squares)
 {
     // Does not matter what was here before. This needs to be cleared.
     enPassant.enPassantAttackSquareApos = attackSquareApos;
@@ -551,7 +554,7 @@ void Board::setEnpassant(std::string attackSquareApos, Piece* pieceThatJumped2Sq
     isEnPassantPossible = true;
 }
 
-void Board::handleEnPassant(Square& source, Square& target)
+void Board::handleEnPassant(Square &source, Square &target)
 {
     transaction.targetPcPtr = enPassant.pieceThatJumped2Square;
     source.piece->move(target);
@@ -561,7 +564,8 @@ void Board::handleEnPassant(Square& source, Square& target)
 void Board::emptyBuffer()
 {
     delete transaction.targetPcPtr;
-    if(transaction.isPromotion){
+    if (transaction.isPromotion)
+    {
         delete transaction.sourcePcPtr;
     }
 }
@@ -589,39 +593,43 @@ void Board::restoreTransaction()
     }
 }
 
-bool Board::handlePromotion(Square& source, Square& target, Move &move)
+void askUserForInput(Move& move)
+{
+    std::string userInput;
+    std::cout << userInput;
+    while (userInput.size() != 1)
+    {
+        std::cout << "Please pick promotion piece: (q,b,r,n)" << std::endl;
+        std::cin >> userInput;
+    }
+    std::cout << "userInput 0: " << userInput[0] << std::endl;
+    switch (userInput[0])
+    {
+    case 'q':
+        move.promotion = Promotion::Queen;
+        break;
+    case 'b':
+        move.promotion = Promotion::Bishop;
+        break;
+    case 'n':
+    case 'k':
+        move.promotion = Promotion::Knight;
+        break;
+    case 'r':
+        move.promotion = Promotion::Rook;
+        break;
+    }
+}
+
+bool Board::handlePromotion(Square &source, Square &target, Move &move)
 {
     source.piece->move(target);
     if (move.promotion == Promotion::None)
     {
-        std::string userInput;
-        std::cout << userInput;
-        while (userInput.size() != 1)
-        {
-            std::cout << "Please pick promotion piece: (q,b,r,n)" << std::endl;
-            std::cin >> userInput;
-        }
-        std::cout << "userInput 0: " << userInput[0] << std::endl;
-        switch (userInput[0])
-        {
-        case 'q':
-            move.promotion = Promotion::Queen;
-            break;
-        case 'b':
-            move.promotion = Promotion::Bishop;
-            break;
-        case 'n':
-        case 'k':
-            move.promotion = Promotion::Knight;
-            break;
-        case 'r':
-            move.promotion = Promotion::Rook;
-            break;
-        default:
-            std::cout << "Invalid promotion." << std::endl;
-            restoreTransaction();
-            return false;
-        }
+        move.promotion = Promotion::Queen;
+        // askUserForInput(move); // Unless specified the promotion will be queen.
+        // This is automatic as the backandforth with the player should not be done
+        // at nested levels. But may prove bad when playing.
     }
     switch (move.promotion)
     {

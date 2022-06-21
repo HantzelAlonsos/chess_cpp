@@ -14,6 +14,8 @@ public:
          Square *,
          Board &);
 
+    ~Bishop() = default;
+
     bool isMoveValid(const Square &);
     void move(Square &);
     bool canAttack(const Square &);

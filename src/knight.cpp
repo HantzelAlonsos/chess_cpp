@@ -20,7 +20,7 @@ bool Knight::isMoveValid(const Square &target)
     int rowDiff = this->square->row - target.row;
     int colDiff = this->square->column - target.column;
 
-    if (abs(colDiff) == 1 && abs(rowDiff) == 2 || abs(rowDiff) == 1 && abs(colDiff) == 2)
+    if ( (abs(colDiff) == 1 && abs(rowDiff) == 2) || (abs(rowDiff) == 1 && abs(colDiff) == 2))
     {
         return true;
     }

@@ -105,6 +105,7 @@ private:
     bool isKingInCheckOnSquare(Color color,   const Square &target) const;
     std::vector<Piece*> findPieces(Piece_type, Color) const;
     std::vector<Piece*> findPieces(Color&) const;
+    void askUserForInput(Move&); // Not in use
 
 };
 

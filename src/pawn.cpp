@@ -80,7 +80,6 @@ void Pawn::move(Square &target)
     }
     // possible moves
     int rowDiff = this->square->row - target.row;
-    int colDiff = this->square->column - target.column;
 
     // Move target
     // This should be handled with std::move later on.

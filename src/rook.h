@@ -14,10 +14,13 @@ public:
            Square *,
            Board &);
 
+    ~Rook() = default;
+
     bool hasMoved;
     bool isMoveValid(const Square &);
     void move(Square &);
     bool canAttack(const Square &);
+
 };
 
 #endif // ROOK_H

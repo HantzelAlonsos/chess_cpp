@@ -20,7 +20,7 @@ bool King::isMoveValid(const Square &target)
     int rowDiff = this->square->row - target.row;
     int colDiff = this->square->colInt - target.colInt;
 
-    if (abs(rowDiff) == 1 && colDiff == 0 || abs(colDiff) == 1 && rowDiff == 0 || (abs(rowDiff) == 1 && abs(colDiff) == 1))
+    if ((abs(rowDiff) == 1 && colDiff == 0) || (abs(colDiff) == 1 && rowDiff == 0) || (abs(rowDiff) == 1 && abs(colDiff) == 1))
     {
         return true;
     }

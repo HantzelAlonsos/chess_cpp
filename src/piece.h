@@ -44,10 +44,12 @@ public:
           Square *square,
           Board &board);
 
-    static Piece* bufferPtr;
     virtual bool isMoveValid(const Square &);
     virtual void move(Square &);
     virtual bool canAttack(const Square&);
+
+    virtual ~Piece() = default;
 };
+
 
 #endif // PIECE_H

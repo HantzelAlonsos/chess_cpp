@@ -4,7 +4,6 @@
 #include "piece.h"
 #include "board.h"
 
-// Pawn also requires to know what square it is standing on. As such
 class Pawn : public Piece
 {
 public:
@@ -15,6 +14,8 @@ public:
          Square *,
          Board &);
     
+    ~Pawn() = default; // Why should this be virtual ? :S
+
     bool hasMoved;
     bool isMoveValid(const Square &);
     void move(Square &);

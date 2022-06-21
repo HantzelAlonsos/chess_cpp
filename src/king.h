@@ -18,6 +18,8 @@ public:
     bool isMoveValid(const Square &);
     void move(Square &);
     bool canAttack(const Square &);
+
+    ~King() = default;
 };
 
 
